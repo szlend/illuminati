@@ -9,7 +9,17 @@ var express = require('express'),
  * Return a list of all detected triangles from the image
  */
 var findTriangles = function(img) {
-  var tmp = img.copy();
+  var tmp;
+  if (img.channels() == 4) {
+    // node-opecv doesn't support BGRA2BGR conversion so just remove the A
+    var split = img.split();
+    var rgb = [split[0], split[1], split[2]];
+    tmp = new cv.Matrix(img.height(), img.width(), cv.Constants.CV_8UC3);
+    tmp.merge(rgb);
+  } else {
+    tmp = img.copy();
+  }
+
   tmp.convertGrayscale();
   tmp.gaussianBlur([7, 7])
   tmp.canny(10, 100);
@@ -113,7 +123,7 @@ var fetchImage = function(url, path, options) {
 
   request(url, function(err, r) {
     // only jpeg for now
-    if (err == null && r.statusCode == 200 && url.match(/\.(jpg|jpeg)/i)) {
+    if (err == null && r.statusCode == 200) {
       request(url).pipe(stream);
     } else {
       if (typeof(options.error) === 'function') options.error(err);

@@ -1,0 +1,25 @@
+{
+  "name": "illuminati",
+  "version": "1.0.0",
+  "description": "",
+  "main": "illuminati.js",
+  "dependencies": {
+    "express": "^4.14.0",
+    "opencv": "^6.0.0",
+    "request": "^2.76.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/szlend/illuminati.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/szlend/illuminati/issues"
+  },
+  "homepage": "https://github.com/szlend/illuminati#readme"
+}
