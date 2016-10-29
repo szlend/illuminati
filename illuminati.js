@@ -122,7 +122,6 @@ var fetchImage = function(url, path, options) {
   });
 
   request(url, function(err, r) {
-    // only jpeg for now
     if (err == null && r.statusCode == 200) {
       request(url).pipe(stream);
     } else {
