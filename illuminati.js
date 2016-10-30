@@ -9,17 +9,7 @@ var express = require('express'),
  * Return a list of all detected triangles from the image
  */
 var findTriangles = function(img) {
-  var tmp;
-  if (img.channels() == 4) {
-    // node-opecv doesn't support BGRA2BGR conversion so just remove the A
-    var split = img.split();
-    var rgb = [split[0], split[1], split[2]];
-    tmp = new cv.Matrix(img.height(), img.width(), cv.Constants.CV_8UC3);
-    tmp.merge(rgb);
-  } else {
-    tmp = img.copy();
-  }
-
+  var tmp = img.copy();
   tmp.convertGrayscale();
   tmp.gaussianBlur([7, 7])
   tmp.canny(10, 100);
@@ -108,8 +98,15 @@ var fetchCachedImage = function(path, options) {
 var fetchImage = function(url, path, options) {
   options = options || {}
 
-  var stream = new cv.ImageDataStream();
-  stream.on('load', function(img) {
+  var sharp = require('sharp');
+  var convert = sharp()
+    .resize(1080, 1080)
+    .max()
+    .withoutEnlargement()
+    .toFormat('jpeg')
+
+  var draw = new cv.ImageDataStream();
+  draw.on('load', function(img) {
     var triangles = findTriangles(img);
     if (options.random) {
       drawRandomTriangle(img, triangles, [0, 0, 255], 2);
@@ -123,7 +120,7 @@ var fetchImage = function(url, path, options) {
 
   request(url, function(err, r) {
     if (err == null && r.statusCode == 200) {
-      request(url).pipe(stream);
+      request(url).pipe(convert).pipe(draw);
     } else {
       if (typeof(options.error) === 'function') options.error(err);
     }
