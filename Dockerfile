@@ -12,4 +12,4 @@ COPY package.json package.json
 RUN mkdir tmp && npm install
 
 COPY illuminati.js illuminati.js
-CMD forever nodejs illuminati.js
+CMD forever illuminati.js
