@@ -1,0 +1,21 @@
+name: Continuous integration
+on: [push]
+
+jobs:
+  test:
+    name: Run build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Build application
+        id: build
+        uses: whoan/docker-build-with-cache-action@v5
+        with:
+          username: ${{ github.repository_owner }}
+          password: ${{ github.token }}
+          registry: docker.pkg.github.com
+          image_name: illuminati
+          push_git_tag: true
